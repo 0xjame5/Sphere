@@ -1,3 +1,13 @@
+"""
+Name: app.py
+Description: Holds endpoints for our application.
+"""
+
+"""
+TODO: Create an endpoint to transfer money
+We need to pull this data and place it into a SQL database
+"""
+
 import json
 
 import requests
@@ -15,45 +25,41 @@ CUSTOMER_ID = ""
 API_KEY = "1224760f0bb2413925135dbdb6e28aff"
 
 
-def get_checking_accounts(results):
-	new_results = []
-
-	for result in results:
-		if result['type'] == 'Checking':
-			new_results.append(result)
-
-	return new_results
 
 
-@app.route("/capital_one/checking_accounts/")
-def get_list_of_checking_accounts():
-	# http://api.reimaginebanking.com/accounts?type=Checking&key=1224760f0bb2413925135dbdb6e28aff
+#
+# def get_checking_accounts(results):
+# 	new_results = []
+#
+# 	for result in results:
+# 		if result['type'] == 'Checking':
+# 			new_results.append(result)
+#
+# 	return new_results
 
-	path_to_url = "{0}/enterprise/accounts?key={1}".format(BASE_URL, API_KEY)
 
-	payload = {
-		'type': "Checking"
-	}
-	response = requests.get(
-		path_to_url,
-		data=json.dumps(payload),
-		headers={
-			'content-type': 'application/json'
-		},
-	)
-
-	data = json.loads(response.content)
-
-	print(data)
-	print(type(data))
-
-	if response.status_code == 200:
-		results = get_checking_accounts(data["results"])
-
-		return jsonify(checking_accounts=results)
-
-	else:
-		return jsonify(success=False)
+# @app.route("/capital_one/checking_accounts/")
+# def get_list_of_checking_accounts():
+# 	path_to_url = "{0}/enterprise/accounts?key={1}".format(BASE_URL, API_KEY)
+#
+# 	payload = {
+# 		'type': "Checking"
+# 	}
+# 	response = requests.get(
+# 		path_to_url,
+# 		data=json.dumps(payload),
+# 		headers={
+# 			'content-type': 'application/json'
+# 		},
+# 	)
+#
+# 	data = json.loads(response.content)
+#
+# 	if response.status_code == 200:
+# 		results = get_checking_accounts(data["results"])
+# 		return jsonify(checking_accounts=results)
+# 	else:
+# 		return jsonify(success=False)
 
 
 """
