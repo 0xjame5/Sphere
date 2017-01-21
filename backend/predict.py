@@ -20,4 +20,10 @@ with open(API_KEY_FILE) as api_key:
     for concept in TEST_DATA_DIRS:
 
         # predict with the model
-        print(model.predict_by_filename(concept))
+        json_data = dict(model.predict_by_filename(concept))
+
+        outputs = (json_data["outputs"][0]["data"]["concepts"])
+
+        recognized_user = max(outputs, key=lambda x: x["value"])["id"]
+
+        print(recognized_user)
