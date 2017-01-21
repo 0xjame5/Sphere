@@ -16,6 +16,7 @@ def get_checking_accounts(results):
 
 	return new_results
 
+
 def get_list_of_checking_accounts():
 	path_to_url = "{0}/enterprise/accounts?key={1}".format(BASE_URL, API_KEY)
 
@@ -42,7 +43,13 @@ def get_list_of_checking_accounts():
 
 
 def get_recent_deposits():
-	NUM_OF_RESULTS = 10
+	# Requested content:
+	# first/last name of person and customer id
+	# date of transaction
+	# amount transacted
+	# is it a positive or negative
+
+
 
 	path_to_url = "{0}/enterprise/deposits?key={1}".format(
 		BASE_URL, API_KEY
@@ -59,10 +66,32 @@ def get_recent_deposits():
 		data = json.loads(response.content)
 		results = data["results"]
 
-		return results[:NUM_OF_RESULTS]
+		results = filter_executed_deposits(results)
+		print(results)
+
+		for result in results:
+			account_id = result["payee_id"]
+			customer_id = get_customer_id(account_id)
+			customer = get_customer_information(customer_id)
+			result.update(customer)
+
+		return results
 	else:
 		print("error")
 		return []
+
+
+def filter_executed_deposits(results):
+	NUM_OF_RESULTS = 5
+	new_results = []
+	for result in results:
+		if len(new_results) < NUM_OF_RESULTS:
+			if result["status"] == "executed":
+				new_results.append(result)
+		else:
+			break
+
+	return new_results
 
 
 def get_customer_information(customer_id):
@@ -89,6 +118,8 @@ def get_customer_information(customer_id):
 	else:
 		print("error")
 		return {}
+
+
 def get_customer_id(account_id):
 	"""
 	Call API to get account information, then retrieve customer ID from there
@@ -109,9 +140,12 @@ def get_customer_id(account_id):
 		},
 	)
 
-	if response.content == 200:
+	print(account_id)
+
+	if response.status_code == 200:
 		data = json.loads(response.content)
 		return data["customer_id"]
 	else:
 		print("ERROR!")
+		print(response.content)
 		return 0
