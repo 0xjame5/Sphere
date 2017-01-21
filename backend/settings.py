@@ -1,6 +1,7 @@
 from os import path
 
-API_KEY_FILE = path.join(
-    path.dirname(path.dirname(path.abspath(__file__))),
-    "apis.json"
-)
+BASE_DIR = path.dirname(path.abspath(__file__))
+
+API_KEY_FILE = path.join(path.dirname(BASE_DIR), "apis.json")
+
+DB_PATH = path.join(path.dirname(BASE_DIR), "db")
