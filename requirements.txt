@@ -1,0 +1,3 @@
+pysolr==3.6.0
+requests==2.12.5
+watson-developer-cloud==0.23.0

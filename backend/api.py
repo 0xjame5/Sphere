@@ -1,18 +1,29 @@
-from clarifai.rest import ClarifaiApp
+import json
+from os.path import join, dirname
+from os import environ
+from watson_developer_cloud import VisualRecognitionV3
 
-app = ClarifaiApp("{clientId}", "{clientSecret}")
+from settings import API_KEY_FILE, DB_PATH
 
-# import a few labeld images
-app.inputs.create_image_from_url(url="https://samples.clarifai.com/dog1.jpeg", concepts=["cute dog"], not_concepts=["cute cat"])
-app.inputs.create_image_from_url(url="https://samples.clarifai.com/dog2.jpeg", concepts=["cute dog"], not_concepts=["cute cat"])
+with open(API_KEY_FILE) as api_key:
+    api_key = json.load(api_key)
 
-app.inputs.create_image_from_url(url="https://samples.clarifai.com/cat1.jpeg", concepts=["cute cat"], not_concepts=["cute dog"])
-app.inputs.create_image_from_url(url="https://samples.clarifai.com/cat2.jpeg", concepts=["cute cat"], not_concepts=["cute dog"])
+    visual_recognition = VisualRecognitionV3(
+        '2016-05-20', api_key=api_key["api_key"])
 
-model = app.models.create(model_id="pets", concepts=["cute cat", "cute dog"])
+    with open(join(DB_PATH, 'meh.zip'), 'rb') as cars, \
+            open(join(DB_PATH, 'meh2.zip'), 'rb') as trucks:
+        print(
+            json.dumps(
+                visual_recognition.create_classifier(
+                    'Cars vs Trucks',
+                    cars_positive_examples=cars,
+                    negative_examples=trucks), indent=2))
 
-model = model.train()
-
-# predict with samples
-print model.predict_by_url(url="https://samples.clarifai.com/dog3.jpeg")
-print model.predict_by_url(url="https://samples.clarifai.com/cat3.jpeg")
+    with open(join(DB_PATH, 'subject15.normal.jpg'), 'rb') as image_file:
+        print(
+            json.dumps(
+                visual_recognition.classify(images_file=image_file),
+                indent=2
+            )
+        )
