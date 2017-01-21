@@ -9,3 +9,4 @@ DB_PATH = path.join(path.dirname(BASE_DIR), "data")
 DATA_PATH = path.join(path.dirname(BASE_DIR), "data")
 
 TRAIN_PATH = path.join(DATA_PATH, "train")
+TEST_PATH = path.join(DATA_PATH, "test")
