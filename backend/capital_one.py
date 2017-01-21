@@ -117,8 +117,8 @@ def get_customer_information(customer_id):
 	:return: a dictionary with customer information
 	"""
 
-	path_to_url = "{0}/enterprise/cusotmer?key={1}".format(
-		BASE_URL, API_KEY
+	path_to_url = "{0}/enterprise/customers/{1}?key={2}".format(
+		BASE_URL, customer_id, API_KEY
 	)
 
 	response = requests.get(
@@ -130,11 +130,11 @@ def get_customer_information(customer_id):
 
 	if response.status_code == 200:
 		data = json.loads(response.content)
-		print(data["results"])
+		return data
 
 	else:
 		print("error")
-		return []
+		return {}
 
 
 def get_customer_id(account_id):
