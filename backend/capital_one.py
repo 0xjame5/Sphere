@@ -88,6 +88,8 @@ def delete_account(account_id):
 
 
 def get_recent_deposits():
+	NUM_OF_RESULTS = 10
+
 	path_to_url = "{0}/enterprise/deposits?key={1}".format(
 		BASE_URL, API_KEY
 	)
@@ -101,14 +103,63 @@ def get_recent_deposits():
 
 	if response.status_code == 200:
 		data = json.loads(response.content)
-
 		results = data["results"]
 
-		NUM_OF_RESULTS = 10
 		return results[:NUM_OF_RESULTS]
+	else:
+		print("error")
+		return []
+
+
+def get_customer_information(customer_id):
+	"""
+	:param customer_id: the id of the customer w/ Capital One API
+	:return: a dictionary with customer information
+	"""
+
+	path_to_url = "{0}/enterprise/cusotmer?key={1}".format(
+		BASE_URL, API_KEY
+	)
+
+	response = requests.get(
+		path_to_url,
+		headers={
+			'content-type': 'application/json'
+		},
+	)
+
+	if response.status_code == 200:
+		data = json.loads(response.content)
+		print(data["results"])
 
 	else:
 		print("error")
 		return []
-	# 	return response.content["results"]
-	# # /enterprise / deposits?key = 1224760f0bb2413925135dbdb6e28aff
+
+
+def get_customer_id(account_id):
+	"""
+	Call API to get account information, then retrieve customer ID from there
+	:param account_id:
+	:return: returns the customer_id, required for customer_information
+	"""
+
+	# enterprise/accounts/56c66be6a73e492741507b39?key=1224760f0bb2413925135dbdb6e28aff
+
+	path_to_url = "{0}/enterprise/accounts/{1}?key={2}".format(
+		BASE_URL, account_id, API_KEY
+	)
+
+	response = requests.get(
+		path_to_url,
+		headers={
+			'content-type': 'application/json'
+		},
+	)
+
+	if response.content == 200:
+		data = json.loads(response.content)
+		return data["customer_id"]
+	else:
+		print("ERROR!")
+		return 0

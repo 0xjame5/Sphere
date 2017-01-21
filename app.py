@@ -10,7 +10,7 @@ We need to pull this data and place it into a SQL database
 
 from flask import Flask, jsonify
 
-from backend.capital_one_api import get_recent_deposits
+from backend.capital_one import get_recent_deposits
 
 app = Flask(__name__)
 
@@ -67,18 +67,17 @@ Verify if a face exists and return the ID of the user
 If not, we want to make the user upload to api and train the clarifai data
 """
 
-
 """ CAPITAL ONE """
+
+
 @app.route("/capital_one/recent_deposits")
 def recent_deposits():
 	return jsonify(results=get_recent_deposits())
 
-# @app.route("/capital_one/customer")
-# def customer():
 
-
-
-
+@app.route("/capital_one/customer/<customer_id>")
+def customer(customer_id):
+	pass
 
 
 
