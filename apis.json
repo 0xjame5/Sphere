@@ -1,5 +1,5 @@
 {
-	"clarifai_client_id": "0xhbi3h_FMHanijPiRqyL9gDaaNN2StJxV4M8pdP",
-	"clarifai_secret": "ZL-jLPxVsTjU1liWv23_6cYFG1PYspMgpwVxCJyV",
-	"clarifai_access_token": "EEnMqoywzGd8oYDD1y17d1WlyOcPQl"
+  "url": "https://gateway-a.watsonplatform.net/visual-recognition/api",
+  "note": "It may take up to 5 minutes for this key to become active",
+  "api_key": "69a5e55c8a1816fc8e7fcecb2342b0f083f80920"
 }
