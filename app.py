@@ -29,6 +29,10 @@ class User(db.Model):
 	username = db.Column(db.String(32), index=True)
 	password_hash = db.Column(db.String(64))
 
+
+	first_name = db.Column(db.String(32))
+
+
 	def hash_password(self, password):
 		self.password_hash = pwd_context.encrypt(password)
 
@@ -93,7 +97,7 @@ def get_user(id):
 @auth.login_required
 def get_auth_token():
 	token = g.user.generate_auth_token(600)
-	return jsonify({'token': token.decode('ascii'), 'duration': 600})
+	return jsonify({'token': token.decode('ascii'), 'duration': 30000})
 
 
 @app.route('/api/resource')
@@ -117,3 +121,5 @@ if __name__ == "__main__":
 	if not os.path.exists('db.sqlite'):
 		db.create_all()
 	app.run(debug=True)
+
+
