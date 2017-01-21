@@ -10,7 +10,7 @@ We need to pull this data and place it into a SQL database
 
 from flask import Flask, jsonify
 
-from backend.capital_one import get_recent_deposits
+from backend.capital_one import get_recent_deposits, get_customer_information
 
 app = Flask(__name__)
 
@@ -77,7 +77,9 @@ def recent_deposits():
 
 @app.route("/capital_one/customer/<customer_id>")
 def customer(customer_id):
-	pass
+	return jsonify(results=get_customer_information(customer_id))
+
+
 
 
 

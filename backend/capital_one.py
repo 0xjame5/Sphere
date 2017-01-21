@@ -49,8 +49,6 @@ def get_recent_deposits():
 	# amount transacted
 	# is it a positive or negative
 
-
-
 	path_to_url = "{0}/enterprise/deposits?key={1}".format(
 		BASE_URL, API_KEY
 	)
