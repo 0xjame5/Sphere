@@ -40,3 +40,75 @@ def get_list_of_checking_accounts():
 	else:
 		print("ERROR: Could not obtain data from CapitalOneApi")
 		return []
+
+
+def delete_all_non_checking_accounts():
+	# http://api.reimaginebanking.com/enterprise/customers?key=1224760f0bb2413925135dbdb6e28aff
+
+	path_to_url = "{0}/enterprise/accounts?key={1}".format(BASE_URL, API_KEY)
+
+	response = requests.get(
+		path_to_url,
+		headers={
+			'content-type': 'application/json'
+		},
+	)
+
+	data = json.loads(response.content)
+	if response.status_code == 200:
+		results = data["results"]
+		print(len(results))
+		print(results)
+
+	# print(len(results))
+
+	# capital_one customer id
+
+	# print(results)
+	else:
+		print("ERROR")
+
+	# curl -X DELETE --header "Accept: application/json" "http://api.reimaginebanking.com/accounts/588381221756fc834d8eb749?key=1224760f0bb2413925135dbdb6e28aff"
+
+
+def delete_account(account_id):
+	path_to_url = "{0}/accounts/{1}?key={2}".format(
+		BASE_URL, account_id, API_KEY
+	)
+
+	response = requests.delete(
+		path_to_url,
+		headers={
+			'content-type': 'application/json'
+		},
+	)
+
+	print(response.status_code)
+	print(response.content)
+
+
+def get_recent_deposits():
+	path_to_url = "{0}/enterprise/deposits?key={1}".format(
+		BASE_URL, API_KEY
+	)
+
+	response = requests.get(
+		path_to_url,
+		headers={
+			'content-type': 'application/json'
+		},
+	)
+
+	if response.status_code == 200:
+		data = json.loads(response.content)
+
+		results = data["results"]
+
+		NUM_OF_RESULTS = 10
+		return results[:NUM_OF_RESULTS]
+
+	else:
+		print("error")
+		return []
+	# 	return response.content["results"]
+	# # /enterprise / deposits?key = 1224760f0bb2413925135dbdb6e28aff

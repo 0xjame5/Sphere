@@ -8,10 +8,9 @@ TODO: Create an endpoint to transfer money
 We need to pull this data and place it into a SQL database
 """
 
-import json
-
-import requests
 from flask import Flask, jsonify
+
+from backend.capital_one_api import get_recent_deposits
 
 app = Flask(__name__)
 
@@ -23,9 +22,6 @@ def transfer_money():
 BASE_URL = "http://api.reimaginebanking.com/"
 CUSTOMER_ID = ""
 API_KEY = "1224760f0bb2413925135dbdb6e28aff"
-
-
-
 
 #
 # def get_checking_accounts(results):
@@ -70,6 +66,21 @@ Verify if a face exists and return the ID of the user
 
 If not, we want to make the user upload to api and train the clarifai data
 """
+
+
+""" CAPITAL ONE """
+@app.route("/capital_one/recent_deposits")
+def recent_deposits():
+	return jsonify(results=get_recent_deposits())
+
+# @app.route("/capital_one/customer")
+# def customer():
+
+
+
+
+
+
 
 if __name__ == "__main__":
 	app.run(debug=True)
