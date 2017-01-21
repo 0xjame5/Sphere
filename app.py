@@ -1,22 +1,27 @@
-from flask import Flask
+from flask import Flask, jsonify
+
+from backend.capital_one import get_recent_deposits, get_customer_information
+
 app = Flask(__name__)
 
-@app.route("/")
-def hello():
-    return "Hello World!"
 
-@app.route("/clarifai/upload_image")
-def upload_image():
-	pass
 
-"""
-WHAT DO WE NEED THE API TO DO?
-WE NEED IT TO...:
 
-Verify if a face exists and return the ID of the user
 
-If not, we want to make the user upload to api and train the clarifai data
-"""
+@app.route("/capital_one/recent_deposits")
+def recent_deposits():
+	return jsonify(results=get_recent_deposits())
+
+
+@app.route("/capital_one/customer/<customer_id>")
+def customer(customer_id):
+	return jsonify(results=get_customer_information(customer_id))
+
+
+
+
+
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
+	app.run(debug=True)
