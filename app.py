@@ -1,5 +1,6 @@
 import os
 
+import boto3
 from flask import Flask, abort, request, jsonify, g, url_for
 from flask.ext.httpauth import HTTPBasicAuth
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -7,11 +8,8 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from passlib.apps import custom_app_context as pwd_context
 
-from backend import predict
-
 from backend.capital_one import get_recent_deposits, \
 	get_customer_information, transfer_money
-
 
 """ Flask application factory """
 
@@ -19,7 +17,8 @@ from backend.capital_one import get_recent_deposits, \
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy dog'
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://umuyufhpqkxbfd:ab1220192cf8f53502d2f5eab4205ebb441dfa1c1500d66ef3e06633022ff105@ec2-54-163-246-165.compute-1.amazonaws.com:5432/dddq6l1q9nlmo6"
+app.config[
+	'SQLALCHEMY_DATABASE_URI'] = "postgres://umuyufhpqkxbfd:ab1220192cf8f53502d2f5eab4205ebb441dfa1c1500d66ef3e06633022ff105@ec2-54-163-246-165.compute-1.amazonaws.com:5432/dddq6l1q9nlmo6"
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 # extensions
@@ -137,6 +136,7 @@ def deposit():
 
 	return jsonify(success=False)
 
+
 @app.route('/api/compare', methods=['POST'])
 @auth.login_required
 def compare():
@@ -144,7 +144,45 @@ def compare():
 	pass
 
 
+# Listen for GET requests to yourdomain.com/sign_s3/
+#
+# Please see https://gist.github.com/RyanBalfanz/f07d827a4818fda0db81 for an example using
+# Python 3 for this view.
+@app.route('/sign-s3/')
+def sign_s3():
+	# Load necessary information into the application
+	S3_BUCKET = "sphere-flask"
 
+	# Load required data from the request
+	file_name = request.args.get('file-name')
+	file_type = request.args.get('file-type')
+
+	# Initialise the S3 client
+	s3 = boto3.client('s3')
+
+	# Generate and return the presigned URL
+	presigned_post = s3.generate_presigned_post(
+		Bucket=S3_BUCKET,
+		Key=file_name,
+		Fields={"acl": "public-read", "Content-Type": file_type},
+		Conditions=[
+			{"acl": "public-read"},
+			{"Content-Type": file_type}
+		],
+		ExpiresIn=3600
+	)
+
+	# Return the data to the client
+	return jsonify(
+		data=presigned_post,
+		url='https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
+	)
+
+
+# return json.dumps({
+# 	'data': presigned_post,
+# 	'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
+# })
 
 
 @app.route("/capital_one/recent_deposits")
