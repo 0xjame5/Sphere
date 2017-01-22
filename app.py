@@ -137,36 +137,35 @@ def deposit():
 	return jsonify(success=False)
 
 
-from boto.s3.connection import S3Connection
-from boto.s3.key import Key
-
-
 @app.route('/api/compare', methods=['POST'])
 @auth.login_required
 def compare():
-	ACCESS_KEY = "AKIAJT3KBLD2HWLCQ4DA"
-	SECRET_KEY = "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"
-	BUCKET_NAME = "sphere-flask"
+	base64 = request.args.get('base64')
 
-	data_file = request.files['user-image']
-	file_name = data_file.filename
+	print(base64)
 
-	conn = S3Connection(ACCESS_KEY, SECRET_KEY)
-	bucket = conn.get_bucket(BUCKET_NAME)
-
-	k = Key(bucket)
-	k.key = file_name
+	# ACCESS_KEY = "AKIAJT3KBLD2HWLCQ4DA"
+	# SECRET_KEY = "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"
+	# BUCKET_NAME = "sphere-flask"
 	#
-	data = "".join(data_file.readlines())
-	print(data)
-	k.set_contents_from_string(data)
+	# data_file = request.files['user-image']
+	# file_name = data_file.filename
+	#
+	# conn = S3Connection(ACCESS_KEY, SECRET_KEY)
+	# bucket = conn.get_bucket(BUCKET_NAME)
+	#
+	# k = Key(bucket)
+	# k.key = file_name
+	# #
+	# data = "".join(data_file.readlines())
+	# print(data)
+	# k.set_contents_from_string(data)
+	#
+	# url = str(k.generate_url(expires_in=300))
 
-	url = str(k.generate_url(expires_in=300))
-
-	username = predict(url)
+	username = predict(base64)
 
 	return jsonify(
-		image_url=url,
 		username=username
 	)
 

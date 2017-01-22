@@ -17,7 +17,7 @@ def predict(input_photo):
         model = app.models.get("faces")
 
         # predict with the model
-        json_data = dict(model.predict_by_url(input_photo))
+        json_data = dict(model.predict_by_base64(input_photo))
         outputs = json_data["outputs"][0]["data"]["concepts"]
 
         return max(outputs, key=lambda x: x["value"])["id"]
