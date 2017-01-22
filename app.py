@@ -29,9 +29,10 @@ class User(db.Model):
 	username = db.Column(db.String(32), index=True)
 	password_hash = db.Column(db.String(64))
 
-
 	first_name = db.Column(db.String(32))
-
+	last_name = db.Column(db.String(32))
+	face_username = db.Column(db.String(32))
+	capital_one_id = db.Column(db.String(32))
 
 	def hash_password(self, password):
 		self.password_hash = pwd_context.encrypt(password)
@@ -121,5 +122,3 @@ if __name__ == "__main__":
 	if not os.path.exists('db.sqlite'):
 		db.create_all()
 	app.run(debug=True)
-
-
