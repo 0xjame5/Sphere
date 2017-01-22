@@ -74,6 +74,11 @@ def verify_password(username_or_token, password):
 def new_user():
 	username = request.json.get('username')
 	password = request.json.get('password')
+
+	first_name = request.json.get('first_name')
+	last_name = request.json.get('last_name')
+
+
 	if username is None or password is None:
 		abort(400)  # missing arguments
 	if User.query.filter_by(username=username).first() is not None:
@@ -105,6 +110,19 @@ def get_auth_token():
 @auth.login_required
 def get_resource():
 	return jsonify({'data': 'Hello, %s!' % g.user.username})
+
+@app.route('/api/profile')
+@auth.login_required
+def get_profile():
+
+	return jsonify(
+		username=g.user.username,
+		first_name=g.user.first_name, last_name=g.user.last_name
+	)
+
+
+
+
 
 
 @app.route("/capital_one/recent_deposits")
