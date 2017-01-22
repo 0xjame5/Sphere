@@ -7,8 +7,13 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from passlib.apps import custom_app_context as pwd_context
 
+from backend import predict
+
+from backend.predict import
+
 from backend.capital_one import get_recent_deposits, \
 	get_customer_information, transfer_money
+
 
 """ Flask application factory """
 
@@ -129,9 +134,18 @@ def deposit():
 	amount = request.args.get('amount')
 	account_id = request.args.get('account_id')
 
-	transfer_money(g.user.capital_one_id, account_id, amount)
+	if transfer_money(g.user.capital_one_id, account_id, amount):
+		return jsonify(success=True)
 
-	return jsonify(success=True)
+	return jsonify(success=False)
+
+@app.route('/api/predict', methods=['POST'])
+@auth.login_required
+def predict():
+	predict.predict()
+
+
+
 
 
 @app.route("/capital_one/recent_deposits")

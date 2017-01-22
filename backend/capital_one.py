@@ -189,7 +189,7 @@ def transfer_money(from_account, to_account, amount):
 
 	}
 
-	lol = requests.post(
+	deposit_response = requests.post(
 		path_to_url,
 		data=json.dumps(deposit),
 		headers={
@@ -197,7 +197,11 @@ def transfer_money(from_account, to_account, amount):
 		},
 	)
 
-	print(lol.content)
+	if withdraw_response.status_code == 200 and deposit_response.status_code == 200:
+		return True
+	return False
+
+
 
 def get_checking_account(capital_one_account_id):
 	path_to_url = "{0}customers/{1}/accounts?key={2}".format(
