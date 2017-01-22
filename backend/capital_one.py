@@ -91,6 +91,35 @@ def filter_executed_deposits(results):
 
 	return new_results
 
+def get_customer_info(customer_id):
+	"""
+		:param customer_id: the id of the customer w/ Capital One API
+		:return: a dictionary with customer information
+	"""
+
+	path_to_url = "{0}customers/{1}?key={2}".format(
+		BASE_URL, customer_id, API_KEY
+	)
+
+	response = requests.get(
+		path_to_url,
+		headers={
+			'content-type': 'application/json'
+		},
+	)
+
+	print(response.content)
+
+	if response.status_code == 200:
+		data = json.loads(response.content)
+		return data
+
+	# 5884220e1756fc834d8ec746
+	# 5884220e1756fc834d8ec746
+	else:
+		print("error")
+		return {}
+
 
 def get_customer_information(customer_id):
 	"""

@@ -8,7 +8,7 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
 from passlib.apps import custom_app_context as pwd_context
 
 from backend.capital_one import get_recent_deposits, \
-	get_customer_information, transfer_money
+	get_customer_information, transfer_money, get_customer_info
 from backend.predict import predict
 
 """ Flask application factory """
@@ -140,7 +140,6 @@ def deposit():
 @app.route('/api/compare', methods=['POST'])
 @auth.login_required
 def compare():
-
 	print(request.data)
 	base64 = request.data
 
@@ -167,9 +166,21 @@ def compare():
 
 	username = predict(base64)
 
+	user = User.query.filter_by(username=username).first()
+
+	data = {}
+
+	print(user.capital_one_id)
+
+	if user.capital_one_id != None:
+		data = get_customer_info(user.capital_one_id)
+
 	return jsonify(
-		username=username
+		username=username,
+		data=data
+
 	)
+
 
 # return json.dumps({
 # 	'data': presigned_post,
