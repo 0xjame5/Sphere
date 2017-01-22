@@ -137,29 +137,33 @@ def deposit():
 	return jsonify(success=False)
 
 
-from boto.s3.connection import S3Connection
-from boto.s3.key import Key
+# from boto.s3.connection import S3Connection
+# from boto.s3.key import Key
 
 
 @app.route('/api/compare', methods=['POST'])
 @auth.login_required
 def compare():
-	ACCESS_KEY = "AKIAJT3KBLD2HWLCQ4DA"
-	SECRET_KEY = "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"
-	BUCKET_NAME = "sphere-flask"
+	return jsonify(
+		name="LOL"
+	)
 
-	data_file = request.files['user-image']
-	file_name = data_file.filename
-
-	conn = S3Connection(ACCESS_KEY, SECRET_KEY)
-	bucket = conn.get_bucket(BUCKET_NAME)
-
-	k = Key(bucket)
-	k.key = file_name
-
-	k.set_contents_from_string(data_file.readlines())
-
-	return jsonify(name=file_name)
+	# ACCESS_KEY = "AKIAJT3KBLD2HWLCQ4DA"
+	# SECRET_KEY = "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"
+	# BUCKET_NAME = "sphere-flask"
+	#
+	# data_file = request.files['user-image']
+	# file_name = data_file.filename
+	#
+	# conn = S3Connection(ACCESS_KEY, SECRET_KEY)
+	# bucket = conn.get_bucket(BUCKET_NAME)
+	#
+	# k = Key(bucket)
+	# k.key = file_name
+	#
+	# k.set_contents_from_string(data_file.readlines())
+	#
+	# return jsonify(name=file_name)
 
 
 # Listen for GET requests to yourdomain.com/sign_s3/
