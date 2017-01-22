@@ -140,9 +140,11 @@ def deposit():
 @app.route('/api/compare', methods=['POST'])
 @auth.login_required
 def compare():
-	base64 = request.args.get('base64')
 
-	print(base64)
+	print(request.data)
+	base64 = request.data
+
+	# print(base64)
 
 	# ACCESS_KEY = "AKIAJT3KBLD2HWLCQ4DA"
 	# SECRET_KEY = "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"
@@ -168,7 +170,6 @@ def compare():
 	return jsonify(
 		username=username
 	)
-
 
 # return json.dumps({
 # 	'data': presigned_post,

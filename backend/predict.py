@@ -6,18 +6,22 @@ from settings import API_KEY_FILE
 
 
 def predict(input_photo):
+	with open(API_KEY_FILE) as api_key:
+		api_key = json.load(api_key)
 
-    with open(API_KEY_FILE) as api_key:
+		app = ClarifaiApp(api_key["id"], api_key["secret"])
 
-        api_key = json.load(api_key)
+		# get the face model
+		model = app.models.get("faces")
 
-        app = ClarifaiApp(api_key["id"], api_key["secret"])
+		# predict with the model
+		json_data = dict(model.predict_by_base64(input_photo))
+		outputs = json_data["outputs"][0]["data"]["concepts"]
 
-        # get the face model
-        model = app.models.get("faces")
+		return max(outputs, key=lambda x: x["value"])["id"]
 
-        # predict with the model
-        json_data = dict(model.predict_by_base64(input_photo))
-        outputs = json_data["outputs"][0]["data"]["concepts"]
 
-        return max(outputs, key=lambda x: x["value"])["id"]
+if __name__ == '__main__':
+	text = open("raww1.txt").read()
+	print(type(text))
+	print(predict(text))
