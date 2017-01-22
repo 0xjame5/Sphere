@@ -91,6 +91,7 @@ def filter_executed_deposits(results):
 
 	return new_results
 
+
 def get_customer_info(customer_id):
 	"""
 		:param customer_id: the id of the customer w/ Capital One API
@@ -181,7 +182,6 @@ def get_customer_id(account_id):
 def transfer_money(from_account, to_account, amount):
 	checking_account_id = get_checking_account(from_account)
 
-
 	# WITHDRAWING FROM YOUR OWN ACCOUNT
 	path_to_url = "{0}accounts/{1}/withdrawals?key={2}".format(
 		BASE_URL, checking_account_id, API_KEY
@@ -202,6 +202,7 @@ def transfer_money(from_account, to_account, amount):
 		},
 	)
 
+	print(withdraw_response.content)
 	# DEPOSITING TO SOMEONES ACCOUNT
 
 	to_capital_one_checking = get_checking_account(to_account)
@@ -215,7 +216,6 @@ def transfer_money(from_account, to_account, amount):
 		"transaction_date": "2017-01-22",
 		"amount": float(amount),
 		"description": "string"
-
 	}
 
 	deposit_response = requests.post(
@@ -226,10 +226,11 @@ def transfer_money(from_account, to_account, amount):
 		},
 	)
 
-	if withdraw_response.status_code == 200 and deposit_response.status_code == 200:
+	print(deposit_response.content)
+	if withdraw_response.status_code == 201 \
+		and deposit_response.status_code == 201:
 		return True
 	return False
-
 
 
 def get_checking_account(capital_one_account_id):

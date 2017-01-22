@@ -121,7 +121,8 @@ def get_resource():
 def get_profile():
 	return jsonify(
 		username=g.user.username,
-		first_name=g.user.first_name, last_name=g.user.last_name
+		first_name=g.user.first_name, last_name=g.user.last_name,
+		account_id=g.user.capital_one_id
 	)
 
 
