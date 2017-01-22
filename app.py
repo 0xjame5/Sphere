@@ -9,8 +9,6 @@ from passlib.apps import custom_app_context as pwd_context
 
 from backend import predict
 
-from backend.predict import
-
 from backend.capital_one import get_recent_deposits, \
 	get_customer_information, transfer_money
 
@@ -21,7 +19,7 @@ from backend.capital_one import get_recent_deposits, \
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'the quick brown fox jumps over the lazy dog'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://umuyufhpqkxbfd:ab1220192cf8f53502d2f5eab4205ebb441dfa1c1500d66ef3e06633022ff105@ec2-54-163-246-165.compute-1.amazonaws.com:5432/dddq6l1q9nlmo6"
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 # extensions
@@ -33,7 +31,7 @@ class User(db.Model):
 	__tablename__ = 'users'
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(32), index=True)
-	password_hash = db.Column(db.String(64))
+	password_hash = db.Column(db.String(128))
 
 	first_name = db.Column(db.String(32))
 	last_name = db.Column(db.String(32))
@@ -139,10 +137,11 @@ def deposit():
 
 	return jsonify(success=False)
 
-@app.route('/api/predict', methods=['POST'])
+@app.route('/api/compare', methods=['POST'])
 @auth.login_required
-def predict():
-	predict.predict()
+def compare():
+	# predict.predict()
+	pass
 
 
 
