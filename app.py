@@ -1,6 +1,5 @@
 import os
 
-import boto3
 from flask import Flask, abort, request, jsonify, g, url_for
 from flask.ext.httpauth import HTTPBasicAuth
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -10,6 +9,7 @@ from passlib.apps import custom_app_context as pwd_context
 
 from backend.capital_one import get_recent_deposits, \
 	get_customer_information, transfer_money
+from backend.predict import predict
 
 """ Flask application factory """
 
@@ -144,7 +144,6 @@ from boto.s3.key import Key
 @app.route('/api/compare', methods=['POST'])
 @auth.login_required
 def compare():
-
 	ACCESS_KEY = "AKIAJT3KBLD2HWLCQ4DA"
 	SECRET_KEY = "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"
 	BUCKET_NAME = "sphere-flask"
@@ -162,43 +161,13 @@ def compare():
 	print(data)
 	k.set_contents_from_string(data)
 
+	url = str(k.generate_url(expires_in=300))
+
+	username = predict(url)
+
 	return jsonify(
-		name="LOL"
-	)
-
-
-# Listen for GET requests to yourdomain.com/sign_s3/
-#
-# Please see https://gist.github.com/RyanBalfanz/f07d827a4818fda0db81 for an example using
-# Python 3 for this view.
-@app.route('/sign-s3/')
-def sign_s3():
-	# Load necessary information into the application
-	S3_BUCKET = "sphere-flask"
-
-	# Load required data from the request
-	file_name = request.args.get('file-name')
-	file_type = request.args.get('file-type')
-
-	# Initialise the S3 client
-	s3 = boto3.client('s3')
-
-	# Generate and return the presigned URL
-	presigned_post = s3.generate_presigned_post(
-		Bucket=S3_BUCKET,
-		Key=file_name,
-		Fields={"acl": "public-read", "Content-Type": file_type},
-		Conditions=[
-			{"acl": "public-read"},
-			{"Content-Type": file_type}
-		],
-		ExpiresIn=3600
-	)
-
-	# Return the data to the client
-	return jsonify(
-		data=presigned_post,
-		url='https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
+		image_url=url,
+		username=username
 	)
 
 
