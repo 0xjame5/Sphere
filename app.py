@@ -7,8 +7,6 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from passlib.apps import custom_app_context as pwd_context
 
-from backend.capital_one import get_recent_deposits, \
-	get_customer_information, transfer_money, get_customer_info
 from backend.predict import predict
 
 """ Flask application factory """
@@ -114,6 +112,9 @@ def get_resource():
 	return jsonify({'data': 'Hello, %s!' % g.user.username})
 
 
+from backend.capital_one import *
+
+
 # TODO: Add more information from capital one id
 # TODO: Add bank psuedo-information
 @app.route('/api/profile')
@@ -121,8 +122,13 @@ def get_resource():
 def get_profile():
 	return jsonify(
 		username=g.user.username,
-		first_name=g.user.first_name, last_name=g.user.last_name,
-		account_id=g.user.capital_one_id
+		first_name=g.user.first_name,
+		last_name=g.user.last_name,
+		account_id=g.user.capital_one_id,
+		account_info=get_customer_info(g.user.capital_one_id),
+		checking_account=get_account_data(
+			get_checking_account(g.user.capital_one_id))
+
 	)
 
 
@@ -181,6 +187,11 @@ def compare():
 		data=data
 
 	)
+
+
+@app.route("/api/account")
+def account():
+	pass
 
 
 # return json.dumps({

@@ -79,6 +79,65 @@ def get_recent_deposits():
 		return []
 
 
+def get_account_data(account_id):
+	# http://api.reimaginebanking.com/accounts/588424bf1756fc834d8ec777?key=1224760f0bb2413925135dbdb6e28aff
+	path_to_url = "{0}accounts/{1}?key={2}".format(
+		BASE_URL, account_id, API_KEY
+	)
+
+	response = requests.get(
+		path_to_url,
+		headers={
+			'content-type': 'application/json'
+		},
+	)
+
+	if response.status_code == 200:
+		data = json.loads(response.content)
+		results = data
+
+		# results = filter_executed_deposits(results)
+		# print(results)
+		#
+
+		return results
+	else:
+		print("error")
+		return []
+
+
+def get_account_info(account_id):
+	# http://api.reimaginebanking.com/accounts/588424bf1756fc834d8ec777?key=1224760f0bb2413925135dbdb6e28aff
+	path_to_url = "{0}/enterprise/deposits?key={1}".format(
+		BASE_URL, API_KEY
+	)
+
+	response = requests.get(
+		path_to_url,
+		headers={
+			'content-type': 'application/json'
+		},
+	)
+
+	if response.status_code == 200:
+		data = json.loads(response.content)
+		results = data["results"]
+
+		results = filter_executed_deposits(results)
+		print(results)
+
+		for result in results:
+			account_id = result["payee_id"]
+			customer_id = get_customer_id(account_id)
+			customer = get_customer_information(customer_id)
+			result.update(customer)
+
+		return results
+	else:
+		print("error")
+		return []
+
+
 def filter_executed_deposits(results):
 	NUM_OF_RESULTS = 5
 	new_results = []
