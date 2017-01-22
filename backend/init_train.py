@@ -8,24 +8,26 @@ from settings import API_KEY_FILE, TRAIN_PATH
 TRAIN_DATA_DIRS = glob(TRAIN_PATH + "/*")
 concepts = []
 
-with open(API_KEY_FILE) as api_key:
+if __name__ == '__main__':
 
-    api_key = json.load(api_key)
+    with open(API_KEY_FILE) as api_key:
 
-    app = ClarifaiApp(api_key["id"], api_key["secret"])
+        api_key = json.load(api_key)
 
-    print app.models.delete_all()
+        app = ClarifaiApp(api_key["id"], api_key["secret"])
 
-    for concept in TRAIN_DATA_DIRS:
+        print app.models.delete_all()
 
-        concepts.append(concept.split('/')[-1])
+        for concept in TRAIN_DATA_DIRS:
 
-        for pic in glob(concept + "/*"):
+            concepts.append(concept.split('/')[-1])
 
-            app.inputs.create_image_from_filename(
-                filename=pic,
-                concepts=[concept.split('/')[-1]]
-            )
+            for pic in glob(concept + "/*"):
 
-    model = app.models.create(model_id="faces", concepts=concepts)
-    model = model.train()
+                app.inputs.create_image_from_filename(
+                    filename=pic,
+                    concepts=[concept.split('/')[-1]]
+                )
+
+        model = app.models.create(model_id="faces", concepts=concepts)
+        model = model.train()

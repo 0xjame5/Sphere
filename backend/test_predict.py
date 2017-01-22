@@ -5,25 +5,27 @@ from clarifai.rest import ClarifaiApp
 
 from settings import API_KEY_FILE, TEST_PATH
 
-TEST_DATA_DIRS = glob(TEST_PATH + "/*")
-concepts = []
+if __name__ == '__main__':
 
-with open(API_KEY_FILE) as api_key:
+    TEST_DATA_DIRS = glob(TEST_PATH + "/*")
+    concepts = []
 
-    api_key = json.load(api_key)
+    with open(API_KEY_FILE) as api_key:
 
-    app = ClarifaiApp(api_key["id"], api_key["secret"])
+        api_key = json.load(api_key)
 
-    # get the face model
-    model = app.models.get("faces")
+        app = ClarifaiApp(api_key["id"], api_key["secret"])
 
-    for concept in TEST_DATA_DIRS:
+        # get the face model
+        model = app.models.get("faces")
 
-        # predict with the model
-        json_data = dict(model.predict_by_filename(concept))
+        for concept in TEST_DATA_DIRS:
 
-        outputs = json_data["outputs"][0]["data"]["concepts"]
+            # predict with the model
+            json_data = dict(model.predict_by_filename(concept))
 
-        recognized_user = max(outputs, key=lambda x: x["value"])["id"]
+            outputs = json_data["outputs"][0]["data"]["concepts"]
 
-        print(recognized_user)
+            recognized_user = max(outputs, key=lambda x: x["value"])["id"]
+
+            print(recognized_user)
