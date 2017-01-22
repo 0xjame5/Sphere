@@ -7,7 +7,8 @@ from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
 from passlib.apps import custom_app_context as pwd_context
 
-from backend.capital_one import get_recent_deposits, get_customer_information
+from backend.capital_one import get_recent_deposits, \
+	get_customer_information, transfer_money
 
 """ Flask application factory """
 
@@ -78,7 +79,6 @@ def new_user():
 	first_name = request.json.get('first_name')
 	last_name = request.json.get('last_name')
 
-
 	if username is None or password is None:
 		abort(400)  # missing arguments
 	if User.query.filter_by(username=username).first() is not None:
@@ -111,18 +111,27 @@ def get_auth_token():
 def get_resource():
 	return jsonify({'data': 'Hello, %s!' % g.user.username})
 
+
+# TODO: Add more information from capital one id
+# TODO: Add bank psuedo-information
 @app.route('/api/profile')
 @auth.login_required
 def get_profile():
-
 	return jsonify(
 		username=g.user.username,
 		first_name=g.user.first_name, last_name=g.user.last_name
 	)
 
 
+@app.route('/api/deposit', methods=['POST'])
+@auth.login_required
+def deposit():
+	amount = request.args.get('amount')
+	account_id = request.args.get('account_id')
 
+	transfer_money(g.user.capital_one_id, account_id, amount)
 
+	return jsonify(success=True)
 
 
 @app.route("/capital_one/recent_deposits")
